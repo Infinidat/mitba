@@ -1,9 +1,8 @@
 # Adapted from
 # http://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties
 import itertools
-import time
+import flux
 from .python_compat import iteritems, wraps
-from logging import getLogger
 from types import MethodType, FunctionType
 
 import logbook
@@ -269,11 +268,11 @@ class TimerCacheData(CacheData):
 
     def __getitem__(self, key):
         next_poll_time, value = CacheData.__getitem__(self, key)
-        if time.time() > next_poll_time:
+        if flux.current_timeline.time() > next_poll_time:
             raise KeyError(key)
         return value
 
     def __setitem__(self, key, value):
-        next_poll_time = time.time() + self.poll_time
+        next_poll_time = flux.current_timeline.time() + self.poll_time
         ret_val = CacheData.__setitem__(self, key, (next_poll_time, value))
         return ret_val

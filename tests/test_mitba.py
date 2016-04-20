@@ -1,6 +1,6 @@
 import functools
-import time
 from collections import defaultdict
+import flux
 from unittest import TestCase
 
 from mitba import (CacheData, TimerCacheData, cached_function, cached_method,
@@ -179,7 +179,7 @@ class CachedMethodTest(TestCase):
         for i in range(1, 10):
             for j in range(10):
                 self.assertEquals(foobar.data_cache(), i)
-                time.sleep(0.01)
+                flux.current_timeline.sleep(0.01)
             foobar.invalidate_cache()
 
         for _ in range(3):
@@ -194,7 +194,7 @@ class CachedMethodTest(TestCase):
 
 @cached_function
 def func():
-    return time.time()
+    return flux.current_timeline.time()
 
 
 class CachedFunctionTest(TestCase):

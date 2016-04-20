@@ -1,5 +1,4 @@
 import os
-import sys
 from setuptools import setup, find_packages
 
 with open(os.path.join(os.path.dirname(__file__), "mitba", "__version__.py")) as version_file:
@@ -7,6 +6,7 @@ with open(os.path.join(os.path.dirname(__file__), "mitba", "__version__.py")) as
 
 _INSTALL_REQUIRES = [
     "logbook",
+    "flux",
 ]
 
 setup(name="mitba",
@@ -28,4 +28,4 @@ setup(name="mitba",
       install_requires=_INSTALL_REQUIRES,
       scripts=[],
       namespace_packages=[]
-      )
+     )
