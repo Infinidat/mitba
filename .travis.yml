@@ -1,9 +1,17 @@
 language: python
 python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
-  - "3.4"
-  - "pypy"
-script: 
-  - "python _test_build.py"
+- '2.6'
+- '2.7'
+- '3.3'
+- '3.4'
+- pypy
+script:
+- python _test_build.py
+deploy:
+  provider: pypi
+  user: vmalloc
+  password:
+    secure: Amo1SHs472tHY8wNGyCU+sCrCdpbG/npwPfZjnUeBLqdANtx0qvJAT7RYb44DBOEqwATW9h5s6NAulaiIwyNZRhaRbjWC8ep/hKy7kedquikl+ntiaXznn5lGIFcAVbEzTF70vCnZA1XbEFfVRCBXC1o3drLzO7QrkvGdPPONN03PF0irY2NedwT2VZVa9Mpuxv1LtwEZ8uXse37okpcqE+HNKQtip8tlqlRsJPBsTr1X/QtlmY4oFCUlxHle6gHYCeAeB7BQFZh5vszQhOoxP7yGJxi8iqFIkwwkLLbIjUdgaPfyprEV1mkOiRJf9noqvWiD+FcpKpjFu5XLQUP3yPiGCF7qvpTM+R3ZUydNYS6URTlmAEtxzaHbNwdQIMIxzrCO4GL9iXGHB/MJeLJBZig3d+HmMSdqdOIj3pUjRPnT0emU2AfmhzQRVdIDackZcZhA+4/PhZkBBAYUDjUwQIqKo6qdtRkbOzQdLUUcGCsf1F2HisW08gV9y2d17iev/DZUNsu7eQZxclYWd3iFHizRz4isTfI2bxsFDdyhHnXO6sxgiTRduf18c+M/H4PMYpf46riZ1me1IIlUcWv97IodhHG+x0ynGwHTzY3PJfCDfEwjhqSUbSOQ2Uj1GgoW4vYGLQy/XsFn4d0N2RbmirFi+m8qWBCKDrZmVSzJ+U=
+  on:
+    tags: true
+    repo: Infinidat/mitba
