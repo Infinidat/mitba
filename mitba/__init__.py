@@ -25,8 +25,8 @@ class cached_property(object):
                 # will only be evaluated every 10 min. at maximum.
                 return random.randint(0, 100)
 
-    The value is cached  in the '_cache' attribute of the object inst that
-    has the property getter method wrapped by this decorator. The '_cache'
+    The value is cached  in the '__mitba_cache__' attribute of the object inst that
+    has the property getter method wrapped by this decorator. The '__mitba_cache__'
     attribute value is a dictionary which has a key for every property of the
     object which is wrapped by this decorator. Each entry in the cache is
     created only when the property is accessed for the first time and is a
@@ -35,7 +35,7 @@ class cached_property(object):
 
     To expire a cached property value manually just do::
 
-        del inst._cache[<property name>]
+        del inst.__mitba_cache__[<property name>]
     """
 
     def __init__(self, fget, doc=None):
@@ -47,13 +47,13 @@ class cached_property(object):
 
     def __get__(self, inst, owner):
         try:
-            value = inst._cache[self.__name__]
+            value = inst.__mitba_cache__[self.__name__]
         except (KeyError, AttributeError):
             value = self.fget(inst)
             try:
-                cache = inst._cache
+                cache = inst.__mitba_cache__
             except AttributeError:
-                cache = inst._cache = {}
+                cache = inst.__mitba_cache__ = {}
             cache[self.__name__] = value
         return value
 
@@ -88,14 +88,14 @@ def cached_method(func):
                 "Passed arguments to {.__name__} are mutable, so the returned value will not be cached", func.__name__)
             return func(inst, *args, **kwargs)
         try:
-            value = inst._cache[key]
+            value = inst.__mitba_cache__[key]
         except (KeyError, AttributeError):
             value = func(inst, *args, **kwargs)
             try:
-                inst._cache[key] = value
+                inst.__mitba_cache__[key] = value
             except AttributeError:
-                inst._cache = {}
-                inst._cache[key] = value
+                inst.__mitba_cache__ = {}
+                inst.__mitba_cache__[key] = value
         return value
 
     callee.__cached_method__ = True
@@ -114,7 +114,7 @@ class cached_method_with_custom_cache(object):
         """Decorator that caches a method's return value each time it is called.
         If called later with the same arguments, the cached value is returned, and
         not re-evaluated.
-        decorated class must implement inst.init_cache() which creates inst._cache dictionary.
+        decorated class must implement inst.init_cache() which creates inst.__mitba_cache__ dictionary.
         """
         method_id = next(_cached_method_id_allocator)
 
@@ -127,15 +127,15 @@ class cached_method_with_custom_cache(object):
                     "Passed arguments to {} are mutable, so the returned value will not be cached", func_name)
                 return func(inst, *args, **kwargs)
             try:
-                return inst._cache[func_name][key]
+                return inst.__mitba_cache__[func_name][key]
             except (KeyError, AttributeError):
                 value = func(inst, *args, **kwargs)
-                if not hasattr(inst, "_cache"):
-                    inst._cache = CacheData()
-                if inst._cache.get(func_name, None) is None:
+                if not hasattr(inst, "__mitba_cache__"):
+                    inst.__mitba_cache__ = CacheData()
+                if inst.__mitba_cache__.get(func_name, None) is None:
                     # cache class creator returns a dict
-                    inst._cache[func_name] = self.cache_class()
-                inst._cache[func_name][key] = value
+                    inst.__mitba_cache__[func_name] = self.cache_class()
+                inst.__mitba_cache__[func_name][key] = value
             return value
 
         callee.__cached_method__ = True
@@ -156,22 +156,22 @@ def cached_function(func):
     def callee(*args, **kwargs):
         key = _get_function_cache_entry(args, kwargs)
         try:
-            value = func._cache[key]
+            value = func.__mitba_cache__[key]
         except (KeyError, AttributeError):
             value = func(*args, **kwargs)
-            if not hasattr(func, '_cache'):
-                setattr(func, '_cache', {})
-            func._cache[key] = value
+            if not hasattr(func, '__mitba_cache__'):
+                setattr(func, '__mitba_cache__', {})
+            func.__mitba_cache__[key] = value
         return value
 
-    callee._cache = func._cache = dict()
+    callee.__mitba_cache__ = func.__mitba_cache__ = dict()
     callee.__cached_method__ = True
     return callee
 
 
 def clear_cache(self):
-    if hasattr(self, '_cache'):
-        getattr(self, '_cache').clear()
+    if hasattr(self, '__mitba_cache__'):
+        getattr(self, '__mitba_cache__').clear()
 
 
 def clear_cached_entry(self, *args, **kwargs):
@@ -186,7 +186,7 @@ def clear_cached_entry(self, *args, **kwargs):
         key = _get_function_cache_entry(args, kwargs)
     else:
         return
-    _ = getattr(self, '_cache', {}).pop(key, None)
+    _ = getattr(self, '__mitba_cache__', {}).pop(key, None)
 
 
 def populate_cache(self, attributes_to_skip=[]):

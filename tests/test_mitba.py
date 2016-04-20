@@ -123,7 +123,7 @@ class CachedMethodTest(TestCase):
                 self.counter = 0
 
             def invalidate_cache(self):
-                self._cache["tested_method"].invalidate()
+                self.__mitba_cache__["tested_method"].invalidate()
 
             @cached_method_with_custom_cache(CacheData)
             def tested_method(self):
@@ -173,7 +173,7 @@ class CachedMethodTest(TestCase):
                 return self.data_counter
 
             def invalidate_cache(self):
-                self._cache["data_cache"].invalidate()
+                self.__mitba_cache__["data_cache"].invalidate()
 
         foobar = FooBar()
         for i in range(1, 10):
