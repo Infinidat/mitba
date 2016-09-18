@@ -2,9 +2,7 @@
 ![Build Status] (https://secure.travis-ci.org/Infinidat/mitba.png )
 
 
-![Downloads] (https://pypip.in/d/mitba/badge.png )
-
-![Version] (https://pypip.in/v/mitba/badge.png )
+![Version] (https://img.shields.io/pypi/v/mitba.svg )
 
 # Overview
 
