@@ -1,0 +1,2 @@
+flux
+Logbook>=0.12.2
