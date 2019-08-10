@@ -21,6 +21,14 @@ def test_subject_populate_cache(subject):
     populate_cache(subject)
     assert subject._counter == 1
 
+
+def test_subject_populate_cache_with_ignored_keys(subject):
+    # pylint: disable=protected-access
+    assert subject._counter == 0
+    populate_cache(subject, ['cached_method_4'])
+    assert subject._counter == 1
+
+
 def test_cached_method_doc(subject):
     assert subject.cached_method_1.__doc__ == subject.cached_method_2.__doc__ == subject.orig_method.__doc__
 

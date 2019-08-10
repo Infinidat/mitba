@@ -188,7 +188,7 @@ def clear_cached_entry(self, *args, **kwargs):
     _ = getattr(self, '__mitba_cache__', {}).pop(key, None)
 
 
-def populate_cache(self, attributes_to_skip=[]):
+def populate_cache(self, attributes_to_skip=()):
     """this method attempts to get all the lazy cached properties and methods
     There are two special cases:
 
