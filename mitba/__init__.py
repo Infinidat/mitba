@@ -188,7 +188,7 @@ def clear_cached_entry(self, *args, **kwargs):
     _ = getattr(self, '__mitba_cache__', {}).pop(key, None)
 
 
-def populate_cache(self, attributes_to_skip=[]):
+def populate_cache(self, attributes_to_skip=()):
     """this method attempts to get all the lazy cached properties and methods
     There are two special cases:
 
@@ -212,8 +212,8 @@ class LazyImmutableDict(object):
     """ Use this object when you have a list of keys but fetching the values is expensive,
     and you want to do it in a lazy fasion"""
 
-    def __init__(self, dict):
-        self._dict = dict
+    def __init__(self, dict):  # pylint: disable=redefined-builtin
+        self._dict = dict  # pylint: disable=redefined-builtin
 
     def __getitem__(self, key):
         value = self._dict[key]
