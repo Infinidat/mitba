@@ -1,5 +1,6 @@
 default: test
 
+
 test: env
 	.env/bin/pytest -x tests --cov=mitba --cov-report=html
 
