@@ -1,8 +1,8 @@
-import functools
 import flux
-
-from mitba import (CacheData, TimerCacheData, cached_function, cached_method_with_custom_cache,
-                   clear_cache, clear_cached_entry, populate_cache)
+import functools
+from mitba import (CacheData, TimerCacheData, cached_function,
+                   cached_method_with_custom_cache, clear_cache,
+                   clear_cached_entry, ignoring_cache, populate_cache)
 
 POLL_TIME = 0.05
 
@@ -52,6 +52,11 @@ def test_cached_method_args(subject):
     assert subject.cached_method_3(1) == 1
     assert subject.cached_method_3(2) == 2
     assert subject.cached_method_3(2) == 2
+    with ignoring_cache():
+        assert subject.cached_method_3(1) == 3
+        assert subject.cached_method_3(2) == 4
+    assert subject.cached_method_3(1) == 3
+    assert subject.cached_method_3(2) == 4
 
 def test_cached_method_mutable_args(subject):
     clear_cache(subject)
@@ -64,6 +69,11 @@ def test_cached_method_kwargs(subject):
     assert subject.cached_method_3(value=1) == 1
     assert subject.cached_method_3(value=2) == 2
     assert subject.cached_method_3(value=2) == 2
+    with ignoring_cache():
+        assert subject.cached_method_3(value=1) == 3
+        assert subject.cached_method_3(value=2) == 4
+    assert subject.cached_method_3(value=1) == 3
+    assert subject.cached_method_3(value=2) == 4
 
 def test_cached_method_mutable_kwargs(subject):
     clear_cache(subject)
@@ -164,11 +174,15 @@ def func():
     return flux.current_timeline.time()
 
 
-
 def test_cache_function_works():
     before = func()
     after = func()
     assert before == after
+    with ignoring_cache():
+        value = func()
+    assert func() == value
+    assert value != before
+    assert value != after
 
 def test_cache_function_clear_cache_works():
     before = func()
