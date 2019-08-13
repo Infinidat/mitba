@@ -1,52 +1,19 @@
+Mitba
+=====
 
-![Build Status] (https://secure.travis-ci.org/Infinidat/mitba.png )
+|                       |                                                                                    |
+|-----------------------|------------------------------------------------------------------------------------|
+| Build Status          | ![Build Status](https://secure.travis-ci.org/Infinidat/mitba.png ) |
+| Supported Versions    | ![Supported Versions](https://img.shields.io/badge/python-2.7%2C3.5%2C3.6%2C3.7-green.svg)    |
+| Latest Version        | ![Latest Version](https://img.shields.io/pypi/v/mitba.svg)                  |
 
-
-![Version] (https://img.shields.io/pypi/v/mitba.svg )
-
-# Overview
 
 `mitba` is a small library for implementing method or function-level caching for results.
 
+* [Documentation](https://mitba.readthedocs.io/en/latest/)
 
-## cached_property and cached_method
-
-```python
- >>> from mitba import cached_property
- >>> class MyClass(object):
- ...     called = False
- ...     @cached_property
- ...     def value(self):
- ...         assert not self.called
- ...         self.called = True
- ...         return 1
- >>> m = MyClass()
- >>> m.value
- 1
- >>> m.value
- 1
-
-```
-
-```python
- >>> from mitba import cached_method
- >>> class MyClass(object):
- ...     called = False
- ...     @cached_method
- ...     def get_value(self):
- ...         assert not self.called
- ...         self.called = True
- ...         return 1
- >>> m = MyClass()
- >>> m.get_value()
- 1
- >>> m.get_value()
- 1
-
-```
 
 Licence
-=======
-
+-------
 BSD3
 
