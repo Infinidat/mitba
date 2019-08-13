@@ -1,13 +1,32 @@
 # Adapted from
 # http://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties
+import threading
 import itertools
 import flux
 from .python_compat import iteritems, wraps
 from types import MethodType, FunctionType
+from contextlib import contextmanager
 
 import logbook
 
 _logger = logbook.Logger(__name__)
+
+
+class _Local(threading.local):
+    enabled = True
+
+_local_caching = _Local()
+
+
+@contextmanager
+def ignoring_cache():
+    prev_enabled = _local_caching.enabled
+    _local_caching.enabled = False
+    try:
+        yield
+    finally:
+        _local_caching.enabled = prev_enabled
+
 
 class cached_property(object):
     """Decorator for read-only properties evaluated only once.
@@ -46,6 +65,8 @@ class cached_property(object):
 
     def __get__(self, inst, owner):
         try:
+            if not _local_caching.enabled:
+                raise KeyError()
             value = inst.__mitba_cache__[self.__name__]
         except (KeyError, AttributeError):
             value = self.fget(inst)
@@ -87,6 +108,8 @@ def cached_method(func):
                 "Passed arguments to {.__name__} are mutable, so the returned value will not be cached", func.__name__)
             return func(inst, *args, **kwargs)
         try:
+            if not _local_caching.enabled:
+                raise KeyError()
             value = inst.__mitba_cache__[key]
         except (KeyError, AttributeError):
             value = func(inst, *args, **kwargs)
@@ -126,6 +149,8 @@ class cached_method_with_custom_cache(object):
                     "Passed arguments to {} are mutable, so the returned value will not be cached", func_name)
                 return func(inst, *args, **kwargs)
             try:
+                if not _local_caching.enabled:
+                    raise KeyError()
                 return inst.__mitba_cache__[func_name][key]
             except (KeyError, AttributeError):
                 value = func(inst, *args, **kwargs)
@@ -155,6 +180,8 @@ def cached_function(func):
     def callee(*args, **kwargs):
         key = _get_function_cache_entry(args, kwargs)
         try:
+            if not _local_caching.enabled:
+                raise KeyError()
             value = func.__mitba_cache__[key]
         except (KeyError, AttributeError):
             value = func(*args, **kwargs)
@@ -188,7 +215,7 @@ def clear_cached_entry(self, *args, **kwargs):
     _ = getattr(self, '__mitba_cache__', {}).pop(key, None)
 
 
-def populate_cache(self, attributes_to_skip=[]):
+def populate_cache(self, attributes_to_skip=()):
     """this method attempts to get all the lazy cached properties and methods
     There are two special cases:
 
@@ -212,8 +239,8 @@ class LazyImmutableDict(object):
     """ Use this object when you have a list of keys but fetching the values is expensive,
     and you want to do it in a lazy fasion"""
 
-    def __init__(self, dict):
-        self._dict = dict
+    def __init__(self, dict):  # pylint: disable=redefined-builtin
+        self._dict = dict  # pylint: disable=redefined-builtin
 
     def __getitem__(self, key):
         value = self._dict[key]
