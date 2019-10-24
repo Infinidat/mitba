@@ -3,10 +3,10 @@
 import threading
 import itertools
 import flux
-from .python_compat import iteritems, wraps
+from functools import wraps
 from types import MethodType, FunctionType
 from contextlib import contextmanager
-
+from inspect import getmembers
 import logbook
 
 _logger = logbook.Logger(__name__)
@@ -168,7 +168,7 @@ class cached_method_with_custom_cache(object):
 
 
 def _get_function_cache_entry(args, kwargs):
-    return (tuple(args), frozenset(iteritems(kwargs)))
+    return (tuple(args), frozenset(kwargs.items()))
 
 
 def cached_function(func):
@@ -223,7 +223,6 @@ def populate_cache(self, attributes_to_skip=()):
       If you wish to skip these, pass them in the attributes_to_skip list
     - The calling of cached methods is done without any arguments, and catches TypeError exceptions
       for the case a cached method requires arguments. The exception is logged."""
-    from inspect import getmembers
     for key, value in getmembers(self):
         if key in attributes_to_skip:
             continue
