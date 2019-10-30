@@ -3,7 +3,6 @@ source = mitba
 
 [report]
 omit = 
-    mitba/python_compat.py
     mitba/__version__.py
 # Regexes for lines to exclude from consideration
 exclude_lines =

@@ -1,7 +1,7 @@
 Changelog
 =========
 
-
+* :feature:`-` Drop support in python2.7 and python3.4
 * :release:`1.1.1 <13-08-2019>`
 * :bug:`-` Fix travis pypi deployment
 * :release:`1.1.0 <13-08-2019>`
